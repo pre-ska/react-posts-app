@@ -2,7 +2,9 @@ import React, { useState, useContext, useReducer, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { useImmerReducer } from "use-immer";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { CSSTransition } from "react-transition-group";
 import Axios from "axios";
+
 Axios.defaults.baseURL = "http://localhost:8080";
 
 import StateContext from "./StateContext";
@@ -20,6 +22,7 @@ import NotFound from "./components/NotFound";
 import FlashMessages from "./components/FlashMessages";
 import Profile from "./components/Profile";
 import EditPost from "./components/EditPost";
+import Search from "./components/Search";
 
 const reducer = (draft, action) => {
   switch (action.type) {
@@ -33,17 +36,24 @@ const reducer = (draft, action) => {
     case "flashMessage":
       draft.flashMessages.push(action.value);
       return;
+    case "openSearch":
+      draft.isSearchOpen = true;
+      return;
+    case "closeSearch":
+      draft.isSearchOpen = false;
+      return;
   }
 };
 
 const INITIAL_STATE = {
-  loggedIn: Boolean(localStorage.getItem("complexAppToken")),
+  loggedIn: Boolean(localStorage.getItem("postsAppToken")),
   flashMessages: [],
   user: {
-    token: localStorage.getItem("complexAppToken"),
-    username: localStorage.getItem("complexAppUsername"),
-    avatar: localStorage.getItem("complexAppAvatar")
-  }
+    token: localStorage.getItem("postsAppToken"),
+    username: localStorage.getItem("postsAppUsername"),
+    avatar: localStorage.getItem("postsAppAvatar")
+  },
+  isSearchOpen: false
 };
 
 const Main = () => {
@@ -51,13 +61,13 @@ const Main = () => {
 
   useEffect(() => {
     if (state.loggedIn) {
-      localStorage.setItem("complexAppToken", state.user.token);
-      localStorage.setItem("complexAppUsername", state.user.username);
-      localStorage.setItem("complexAppAvatar", state.user.avatar);
+      localStorage.setItem("postsAppToken", state.user.token);
+      localStorage.setItem("postsAppUsername", state.user.username);
+      localStorage.setItem("postsAppAvatar", state.user.avatar);
     } else {
-      localStorage.removeItem("complexAppToken");
-      localStorage.removeItem("complexAppUsername");
-      localStorage.removeItem("complexAppAvatar");
+      localStorage.removeItem("postsAppToken");
+      localStorage.removeItem("postsAppUsername");
+      localStorage.removeItem("postsAppAvatar");
     }
   }, [state.loggedIn]);
 
@@ -66,7 +76,9 @@ const Main = () => {
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
           <FlashMessages messages={state.flashMessages} />
+
           <Header />
+
           <Switch>
             <Route path="/profile/:username">
               <Profile />
@@ -100,6 +112,15 @@ const Main = () => {
               <NotFound />
             </Route>
           </Switch>
+
+          <CSSTransition
+            timeout={330}
+            in={state.isSearchOpen}
+            classNames="search-overlay"
+            unmountOnExit>
+            <Search />
+          </CSSTransition>
+
           <Footer />
         </BrowserRouter>
       </DispatchContext.Provider>

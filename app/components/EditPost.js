@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useImmerReducer } from "use-immer";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 
 import Page from "./Page";
@@ -55,6 +55,8 @@ const EditPost = () => {
   const appState = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
 
+  const history = useHistory();
+
   const INITIAL_STATE = {
     title: {
       value: "",
@@ -93,6 +95,15 @@ const EditPost = () => {
 
         if (response.data) {
           dispatch({ type: "fetchComplete", value: response.data });
+
+          if (appState.user.username !== response.data.author.username) {
+            appDispatch({
+              type: "flashMessage",
+              value: "You do not have permission to edit this post"
+            });
+            //redirect to homepage
+            history.push("/");
+          }
         } else {
           dispatch({ type: "notFound" });
         }
