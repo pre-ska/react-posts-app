@@ -6,7 +6,7 @@ import DispatchContext from "../DispatchContext";
 import StateContext from "../StateContext";
 
 const HeaderLoggedIn = () => {
-  const appState = useContext(StateContext);
+  const { user, unreadChatCount } = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
 
   const handleLogout = () => appDispatch({ type: "logout" });
@@ -28,19 +28,29 @@ const HeaderLoggedIn = () => {
       </a>
       <ReactTooltip place="bottom" id="search" className="custom-tooltip" />{" "}
       <span
-        className="mr-2 header-chat-icon text-white"
+        onClick={() => appDispatch({ type: "toggleChat" })}
+        className={
+          "mr-2 header-chat-icon " +
+          (unreadChatCount ? "text-danger" : "text-white")
+        }
         data-for="chat"
         data-tip="Chat">
         <i className="fas fa-comment"></i>
-        <span className="chat-count-badge text-white"> </span>
+        {unreadChatCount ? (
+          <span className="chat-count-badge text-white">
+            {unreadChatCount < 10 ? unreadChatCount : "9+"}
+          </span>
+        ) : (
+          ""
+        )}
       </span>
       <ReactTooltip place="bottom" id="chat" className="custom-tooltip" />{" "}
       <Link
         data-for="profile"
         data-tip="Profile"
-        to={`/profile/${appState.user.username}`}
+        to={`/profile/${user.username}`}
         className="mr-2">
-        <img className="small-header-avatar" src={appState.user.avatar} />
+        <img className="small-header-avatar" src={user.avatar} />
       </Link>
       <ReactTooltip place="bottom" id="profile" className="custom-tooltip" />{" "}
       <Link className="btn btn-sm btn-success mr-2" to="/create-post">

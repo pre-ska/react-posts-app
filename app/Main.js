@@ -23,6 +23,7 @@ import FlashMessages from "./components/FlashMessages";
 import Profile from "./components/Profile";
 import EditPost from "./components/EditPost";
 import Search from "./components/Search";
+import Chat from "./components/Chat";
 
 const reducer = (draft, action) => {
   switch (action.type) {
@@ -42,6 +43,18 @@ const reducer = (draft, action) => {
     case "closeSearch":
       draft.isSearchOpen = false;
       return;
+    case "toggleChat":
+      draft.isChatOpen = !draft.isChatOpen;
+      return;
+    case "closeChat":
+      draft.isChatOpen = false;
+      return;
+    case "incrementNotifications":
+      draft.unreadChatCount++;
+      return;
+    case "resetNotifications":
+      draft.unreadChatCount = 0;
+      return;
   }
 };
 
@@ -53,7 +66,9 @@ const INITIAL_STATE = {
     username: localStorage.getItem("postsAppUsername"),
     avatar: localStorage.getItem("postsAppAvatar")
   },
-  isSearchOpen: false
+  isSearchOpen: false,
+  isChatOpen: false,
+  unreadChatCount: 0
 };
 
 const Main = () => {
@@ -120,6 +135,8 @@ const Main = () => {
             unmountOnExit>
             <Search />
           </CSSTransition>
+
+          <Chat />
 
           <Footer />
         </BrowserRouter>
