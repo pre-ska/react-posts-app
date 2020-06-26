@@ -5,7 +5,8 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { CSSTransition } from "react-transition-group";
 import Axios from "axios";
 
-Axios.defaults.baseURL = "http://localhost:8080";
+Axios.defaults.baseURL =
+  process.env.BACKENDURL || "https://posts-app-express.herokuapp.com";
 
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
@@ -16,17 +17,16 @@ import HomeGuest from "./components/HomeGuest";
 import About from "./components/About";
 import Terms from "./components/Terms";
 import Home from "./components/Home";
-
-const CreatePost = React.lazy(() => import("./components/CreatePost"));
-const ViewSinglePost = React.lazy(() => import("./components/ViewSinglePost"));
-const NotFound = React.lazy(() => import("./components/NotFound"));
-const Profile = React.lazy(() => import("./components/Profile"));
-const EditPost = React.lazy(() => import("./components/EditPost"));
-const Search = React.lazy(() => import("./components/Search"));
-const Chat = React.lazy(() => import("./components/Chat"));
-
+import ViewSinglePost from "./components/ViewSinglePost";
+import NotFound from "./components/NotFound";
+import Profile from "./components/Profile";
+import EditPost from "./components/EditPost";
 import FlashMessages from "./components/FlashMessages";
 import LoadingDotsIcon from "./components/LoadingDotsIcon";
+
+const CreatePost = React.lazy(() => import("./components/CreatePost"));
+const Search = React.lazy(() => import("./components/Search"));
+const Chat = React.lazy(() => import("./components/Chat"));
 
 const reducer = (draft, action) => {
   switch (action.type) {

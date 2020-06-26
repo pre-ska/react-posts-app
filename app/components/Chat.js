@@ -7,7 +7,7 @@ import DispatchContext from "../DispatchContext";
 import { Link } from "react-router-dom";
 
 const Chat = () => {
-  const socket = useRef()
+  const socket = useRef();
   const chatField = useRef(null);
   const chatLog = useRef(null);
 
@@ -27,7 +27,9 @@ const Chat = () => {
   }, [isChatOpen]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:8080");
+    socket.current = io(
+      process.env.BACKENDURL || "https://posts-app-express.herokuapp.com"
+    );
 
     socket.current.on("chatFromServer", message => {
       setState(draft => {
@@ -35,7 +37,7 @@ const Chat = () => {
       });
     });
 
-    return () => socketcurrent..disconnect()
+    return () => socketcurrent.disconnect();
   }, []);
 
   useEffect(() => {
