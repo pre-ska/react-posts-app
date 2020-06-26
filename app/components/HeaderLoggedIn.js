@@ -9,7 +9,13 @@ const HeaderLoggedIn = () => {
   const { user, unreadChatCount } = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
 
-  const handleLogout = () => appDispatch({ type: "logout" });
+  const handleLogout = () => {
+    appDispatch({ type: "logout" });
+    appDispatch({
+      type: "flashMessage",
+      value: "You have successfuly logged out"
+    });
+  };
 
   const handleSearchIcon = e => {
     e.preventDefault();
