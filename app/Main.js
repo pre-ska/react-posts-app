@@ -86,6 +86,41 @@ const Main = () => {
     }
   }, [state.loggedIn]);
 
+  // provjera dali je token istekao na prvom renderu
+  useEffect(() => {
+    if (state.loggedIn) {
+      const ourRequest = Axios.CancelToken.source();
+
+      const fetchResults = async () => {
+        try {
+          const response = await Axios.post(
+            "/checkToken",
+            {
+              token: state.user.token
+            },
+            {
+              cancelToken: ourRequest.token
+            }
+          );
+
+          if (!response.data) {
+            dispatch({ type: "logout" });
+            dispatch({
+              type: "flashMessage",
+              value: "Your session has expired. Please log in again."
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchResults();
+
+      return () => ourRequest.cancel();
+    }
+  }, []);
+
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>

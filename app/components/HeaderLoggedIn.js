@@ -29,14 +29,14 @@ const HeaderLoggedIn = () => {
         data-for="search"
         data-tip="Search"
         href="#"
-        className="text-white mr-2 header-search-icon">
+        className="text-white mr-3 header-search-icon">
         <i className="fas fa-search"></i>
       </a>
       <ReactTooltip place="bottom" id="search" className="custom-tooltip" />{" "}
       <span
         onClick={() => appDispatch({ type: "toggleChat" })}
         className={
-          "mr-2 header-chat-icon " +
+          "mr-3 header-chat-icon " +
           (unreadChatCount ? "text-danger" : "text-white")
         }
         data-for="chat"
@@ -55,8 +55,15 @@ const HeaderLoggedIn = () => {
         data-for="profile"
         data-tip="Profile"
         to={`/profile/${user.username}`}
-        className="mr-2">
+        className="mr-3">
         <img className="small-header-avatar" src={user.avatar} />
+      </Link>{" "}
+      <Link
+        data-for="profile"
+        data-tip="Profile"
+        to={`/profile/${user.username}`}
+        className="text-white mr-3">
+        {user.username}
       </Link>
       <ReactTooltip place="bottom" id="profile" className="custom-tooltip" />{" "}
       <Link className="btn btn-sm btn-success mr-2" to="/create-post">
