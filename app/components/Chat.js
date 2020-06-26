@@ -37,7 +37,7 @@ const Chat = () => {
       });
     });
 
-    return () => socketcurrent.disconnect();
+    return () => socket.current.disconnect();
   }, []);
 
   useEffect(() => {
