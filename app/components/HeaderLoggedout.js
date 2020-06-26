@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import Axios from "axios";
 import DispatchContext from "../DispatchContext";
 
@@ -8,30 +8,44 @@ const HeaderLoggedout = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const usernameInput = useRef();
+  const passwordInput = useRef();
+
   const handleSubmit = async e => {
     e.preventDefault();
 
-    try {
-      const response = await Axios.post("/login", {
-        username,
-        password
-      });
+    if (username === "" || password === "") {
+      if (username === "")
+        usernameInput.current.className =
+          "form-control is-invalid form-control-sm";
 
-      if (response.data) {
-        appDispatch({ type: "login", data: response.data });
-        appDispatch({
-          type: "flashMessage",
-          value: "You have successfuly logged in"
+      if (password === "")
+        passwordInput.current.className =
+          "form-control is-invalid form-control-sm";
+    } else {
+      try {
+        const response = await Axios.post("/login", {
+          username,
+          password
         });
-      } else {
-        console.log("Incorrect usename / password");
-        appDispatch({
-          type: "flashMessage",
-          value: "Invalid username / password"
-        });
+
+        if (response.data) {
+          appDispatch({ type: "login", data: response.data });
+          appDispatch({
+            type: "flashMessage",
+            value: "You have successfuly logged in"
+          });
+        } else {
+          console.log("Incorrect usename / password");
+          appDispatch({
+            type: "flashMessage",
+            value: "Invalid username / password",
+            warning: true
+          });
+        }
+      } catch (error) {
+        console.log(error.response.data);
       }
-    } catch (error) {
-      console.log(error.response.data);
     }
   };
 
@@ -40,23 +54,31 @@ const HeaderLoggedout = () => {
       <div className="row align-items-center">
         <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
           <input
+            ref={usernameInput}
             name="username"
-            className="form-control form-control-sm input-dark"
+            className="form-control form-control-sm"
             type="text"
             placeholder="Username"
             autoComplete="off"
             value={username}
-            onChange={e => setUsername(e.target.value)}
+            onChange={e => {
+              usernameInput.current.className = "form-control form-control-sm";
+              setUsername(e.target.value);
+            }}
           />
         </div>
         <div className="col-md mr-0 pr-md-0 mb-3 mb-md-0">
           <input
+            ref={passwordInput}
             name="password"
-            className="form-control form-control-sm input-dark"
+            className="form-control form-control-sm"
             type="password"
             placeholder="Password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={e => {
+              passwordInput.current.className = "form-control form-control-sm";
+              setPassword(e.target.value);
+            }}
           />
         </div>
         <div className="col-md-auto">

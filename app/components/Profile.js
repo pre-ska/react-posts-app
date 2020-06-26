@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, NavLink, Switch, Route } from "react-router-dom";
+import {
+  useParams,
+  NavLink,
+  Switch,
+  Route,
+  useHistory
+} from "react-router-dom";
 import Axios from "axios";
 import { useImmer } from "use-immer";
 
@@ -8,8 +14,10 @@ import StateContext from "../StateContext";
 import ProfilePosts from "./ProfilePosts";
 import ProfileFollowers from "./ProfileFollowers";
 import ProfileFollowing from "./ProfileFollowing";
+import NotFound from "./NotFound";
 
 const Profile = () => {
+  const history = useHistory();
   const appState = useContext(StateContext);
 
   const { username } = useParams();
@@ -45,11 +53,16 @@ const Profile = () => {
           }
         );
 
+        // if (!response.data) {
+        //   console.log("nema tog korisnika");
+        //   history.push("/404");
+        // } else {
         setState(draft => {
           draft.profileData = response.data;
         });
+        // }
       } catch (error) {
-        console.log(error.response.data);
+        console.log(error);
       }
     };
 
@@ -142,6 +155,14 @@ const Profile = () => {
       draft.stopFollowingRequestCount++;
     });
   };
+
+  if (!state.profileData) {
+    return (
+      <Page title="Cannot find that user">
+        <NotFound />
+      </Page>
+    );
+  }
 
   return (
     <Page title="Profile">

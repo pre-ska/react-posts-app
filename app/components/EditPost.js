@@ -99,7 +99,8 @@ const EditPost = () => {
           if (appState.user.username !== response.data.author.username) {
             appDispatch({
               type: "flashMessage",
-              value: "You do not have permission to edit this post"
+              value: "You do not have permission to edit this post",
+              warning: true
             });
             //redirect to homepage
             history.push("/");

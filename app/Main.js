@@ -38,7 +38,7 @@ const reducer = (draft, action) => {
       draft.loggedIn = false;
       return;
     case "flashMessage":
-      draft.flashMessages.push(action.value);
+      draft.flashMessages.push({ msg: action.value, warning: action.warning });
       return;
     case "openSearch":
       draft.isSearchOpen = true;

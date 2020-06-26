@@ -6,8 +6,11 @@ const FlashMessages = ({ messages }) => {
       {messages.map((message, index) => (
         <div
           key={index}
-          className="alert alert-success text-center floating-alert shadow-sm">
-          {message}
+          className={
+            "alert text-center floating-alert shadow-sm " +
+            (message.warning ? "alert-danger" : "alert-success")
+          }>
+          {message.msg}
         </div>
       ))}
     </div>
