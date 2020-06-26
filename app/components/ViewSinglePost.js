@@ -26,7 +26,7 @@ const ViewSinglePost = () => {
 
     const fetchPost = async () => {
       try {
-        const response = await Axios(`/post/${id}`, {
+        const response = await Axios.get(`/post/${id}`, {
           canceltoken: ourRequest.token
         });
         setPost(response.data);
@@ -39,7 +39,7 @@ const ViewSinglePost = () => {
     fetchPost();
 
     return () => ourRequest.cancel();
-  }, []);
+  }, [id]);
 
   if (!isLoading && !post) {
     return <NotFound />;

@@ -5,20 +5,26 @@ import { useParams } from "react-router-dom";
 import Axios from "axios";
 import StateContext from "../StateContext";
 import ProfilePosts from "./ProfilePosts";
+import { useImmer } from "use-immer";
 
 const Profile = () => {
   const appState = useContext(StateContext);
 
   const { username } = useParams();
 
-  const [profileData, setProfileData] = useState({
-    profileUsername: "...",
-    profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
-    isFolloving: false,
-    counts: {
-      followerCount: 0,
-      followingCount: 0,
-      postCount: 0
+  const [state, setState] = useImmer({
+    followActionLoading: false,
+    startFoloowingrequestCount: 0,
+    stopFollowingRequestCount: 0,
+    profileData: {
+      profileUsername: "...",
+      profileAvatar: "https://gravatar.com/avatar/placeholder?s=128",
+      isFolloving: false,
+      counts: {
+        followerCount: 0,
+        followingCount: 0,
+        postCount: 0
+      }
     }
   });
 
@@ -35,8 +41,10 @@ const Profile = () => {
             canceltoken: ourRequest.token
           }
         );
-        // console.log(response.data);
-        setProfileData(response.data);
+
+        setState(draft => {
+          draft.profileData = response.data;
+        });
       } catch (error) {
         console.log(error.response.data);
       }
@@ -50,22 +58,30 @@ const Profile = () => {
   return (
     <Page title="Profile">
       <h2>
-        <img className="avatar-small" src={profileData.profileAvatar} />{" "}
-        {profileData.profileUsername}
-        <button className="btn btn-primary btn-sm ml-2">
-          Follow <i className="fas fa-user-plus"></i>
-        </button>
+        <img className="avatar-small" src={state.profileData.profileAvatar} />{" "}
+        {state.profileData.profileUsername}
+        {appState.loggedIn &&
+          !state.profileData.isFollowing &&
+          appState.user.username != state.profileData.profileUsername &&
+          state.profileData.profileUsername != "..." && (
+            <button
+              // onClick={startFollowing}
+              // disabled={state.followActionLoading}
+              className="btn btn-primary btn-sm ml-2">
+              Follow <i className="fas fa-user-plus"></i>
+            </button>
+          )}
       </h2>
 
       <div className="profile-nav nav nav-tabs pt-2 mb-4">
         <a href="#" className="active nav-item nav-link">
-          Posts: {profileData.counts.postCount}
+          Posts: {state.profileData.counts.postCount}
         </a>
         <a href="#" className="nav-item nav-link">
-          Followers: {profileData.counts.followerCount}
+          Followers: {state.profileData.counts.followerCount}
         </a>
         <a href="#" className="nav-item nav-link">
-          Following: {profileData.counts.followingCount}
+          Following: {state.profileData.counts.followingCount}
         </a>
       </div>
 
