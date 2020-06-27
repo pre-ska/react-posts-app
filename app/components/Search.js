@@ -110,6 +110,11 @@ const Search = () => {
 
       <div className="search-overlay-bottom">
         <div className="container container--narrow py-3">
+          {!state.requestCount && (
+            <p className="alert alert-primary text-center shadow-sm">
+              Hint: search for "test"
+            </p>
+          )}
           <div
             className={
               "circle-loader " +

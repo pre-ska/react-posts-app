@@ -234,6 +234,10 @@ textarea.tall-textarea {
   color: #007bff;
 }
 
+#live-search-field::placeholder {
+  color: #dbdbdb;
+}
+
 .live-search-results {
   opacity: 0;
   transition: all 0.3s ease-out;

@@ -9,7 +9,7 @@ import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 import NotFound from "./NotFound";
 
-const myReducer = (draft, action) => {
+const reducer = (draft, action) => {
   switch (action.type) {
     case "fetchComplete":
       draft.title.value = action.value.title;
@@ -75,7 +75,7 @@ const EditPost = () => {
     notFound: false
   };
 
-  const [state, dispatch] = useImmerReducer(myReducer, INITIAL_STATE);
+  const [state, dispatch] = useImmerReducer(reducer, INITIAL_STATE);
 
   const submitHandler = async e => {
     e.preventDefault();
@@ -121,6 +121,7 @@ const EditPost = () => {
   useEffect(() => {
     if (state.sendCount) {
       dispatch({ type: "saveRequestStarted" });
+
       const ourRequest = Axios.CancelToken.source();
 
       const updatePost = async () => {
@@ -136,11 +137,13 @@ const EditPost = () => {
               canceltoken: ourRequest.token
             }
           );
-
+          console.log(response.data);
           dispatch({ type: "saveRequestFinished" });
           appDispatch({ type: "flashMessage", value: "Post updated!" });
+          // if (response.data === "success")
+          history.push(`/post/${state.id}`);
         } catch (error) {
-          console.log(error.response.data);
+          console.log(error.response);
         }
       };
 

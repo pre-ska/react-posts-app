@@ -22,6 +22,12 @@ const HeaderLoggedout = () => {
       if (password === "")
         passwordInput.current.className =
           "form-control is-invalid form-control-sm";
+
+      appDispatch({
+        type: "flashMessage",
+        value: "Login fields cannot be empty",
+        warning: true
+      });
     } else {
       try {
         const response = await Axios.post("/login", {

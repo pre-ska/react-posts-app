@@ -131,15 +131,15 @@ const ViewSinglePost = () => {
       <div className="body-content">
         <ReactMarkdown
           source={post.body}
-          allowedTypes={[
-            "paragraph",
-            "strong",
-            "emphasis",
-            "text",
-            "heading",
-            "list",
-            "listItem"
-          ]}
+          // allowedTypes={[
+          //   "paragraph",
+          //   "strong",
+          //   "emphasis",
+          //   "text",
+          //   "heading",
+          //   "list",
+          //   "listItem"
+          // ]}
         />
       </div>
     </Page>

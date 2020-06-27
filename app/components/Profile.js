@@ -17,12 +17,12 @@ import ProfileFollowing from "./ProfileFollowing";
 import NotFound from "./NotFound";
 
 const Profile = () => {
-  const history = useHistory();
   const appState = useContext(StateContext);
 
   const { username } = useParams();
 
   const [state, setState] = useImmer({
+    render: false,
     followActionLoading: false,
     startFollowingRequestCount: 0,
     stopFollowingRequestCount: 0,
@@ -53,16 +53,20 @@ const Profile = () => {
           }
         );
 
-        // if (!response.data) {
-        //   console.log("nema tog korisnika");
-        //   history.push("/404");
-        // } else {
-        setState(draft => {
-          draft.profileData = response.data;
-        });
-        // }
+        if (!response.data) {
+          console.log("nema tog korisnika");
+          setState(draft => {
+            draft.profileData = false;
+          });
+        } else {
+          console.log(`profil ${username} pronađen`);
+          setState(draft => {
+            draft.render = true;
+            draft.profileData = response.data;
+          });
+        }
       } catch (error) {
-        console.log(error);
+        console.log(error.response);
       }
     };
 
@@ -73,6 +77,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (state.startFollowingRequestCount) {
+      console.log("proces za start-following");
       setState(draft => {
         draft.followActionLoading = true;
       });
@@ -109,7 +114,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (state.stopFollowingRequestCount) {
-      console.log("stop follow");
+      console.log("proces za STOP-following");
       setState(draft => {
         draft.followActionLoading = true;
       });
@@ -212,17 +217,19 @@ const Profile = () => {
         </NavLink>
       </div>
 
-      <Switch>
-        <Route exact path="/profile/:username">
-          <ProfilePosts />
-        </Route>
-        <Route path="/profile/:username/followers">
-          <ProfileFollowers />
-        </Route>
-        <Route path="/profile/:username/following">
-          <ProfileFollowing />
-        </Route>
-      </Switch>
+      {state.render && (
+        <Switch>
+          <Route exact path="/profile/:username">
+            <ProfilePosts />
+          </Route>
+          <Route path="/profile/:username/followers">
+            <ProfileFollowers />
+          </Route>
+          <Route path="/profile/:username/following">
+            <ProfileFollowing />
+          </Route>
+        </Switch>
+      )}
     </Page>
   );
 };
