@@ -19,4 +19,5 @@ Technologies used in this project:
 - socket.io (live chat)
 - Immer
 - react-router
+- custom flash messages and frontend validation
 - backend: express, mongoDB Atlas
